@@ -21,7 +21,7 @@ export default function Hero({ profile }) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          
+
           {/* Left Column: Editorial & Typographic Narrative */}
           <div className="lg:col-span-7 space-y-6">
             {/* Unboxed Metadata Kicker (Zero-Pill Rule) */}
@@ -41,7 +41,7 @@ export default function Hero({ profile }) {
 
             {/* Display Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] text-balance">
-              Full-Stack Developer <br />
+              Jr. Full-Stack Developer <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-300 to-indigo-200">
                 & UI/UX Engineer
               </span>
@@ -128,10 +128,10 @@ export default function Hero({ profile }) {
           {/* Right Column: Visual Frame & Portrait Card */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-md">
-              
+
               {/* Outer Framing Container */}
               <div className="relative rounded-2xl p-2 bg-gradient-to-b from-zinc-700/50 via-zinc-800/20 to-zinc-900/60 border border-zinc-800 shadow-2xl backdrop-blur-sm">
-                
+
                 {/* Visual Asset Container */}
                 <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-zinc-950">
                   <img
@@ -141,7 +141,7 @@ export default function Hero({ profile }) {
                     className="w-full h-full object-cover object-center filter contrast-[1.02]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                  
+
                   {/* Bottom Portrait Caption Overlay */}
                   <div className="absolute bottom-4 left-4 right-4 text-white">
                     <div className="text-sm font-semibold tracking-tight">Husnain Nawaz</div>
