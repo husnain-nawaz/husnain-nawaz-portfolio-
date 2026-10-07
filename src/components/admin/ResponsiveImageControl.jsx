@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Monitor, Smartphone, Tablet, Image as ImageIcon, 
-  ExternalLink, Check, AlertCircle, RefreshCw, Sparkles, Copy 
+  ExternalLink, Check, AlertCircle, RefreshCw, Sparkles, Copy, Upload 
 } from 'lucide-react';
 
 export const SYSTEM_IMAGE_PRESETS = [
@@ -50,6 +50,45 @@ export default function ResponsiveImageControl({
   const [fitMode, setFitMode] = useState('cover'); // 'cover' | 'contain'
   const [imgError, setImgError] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64Data = reader.result;
+        const res = await fetch('/api/admin/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+          },
+          body: JSON.stringify({
+            fileData: base64Data,
+            fileName: file.name
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          onChange(data.url);
+          setImgError(false);
+        } else {
+          alert('Failed to upload image. Please check server logs.');
+        }
+        setIsUploading(false);
+      };
+    } catch (err) {
+      console.error(err);
+      setIsUploading(false);
+      alert('Error uploading file');
+    }
+  };
 
   const handleCopy = () => {
     if (value) {
@@ -130,6 +169,11 @@ export default function ResponsiveImageControl({
 
       {/* URL Input Bar */}
       <div className="flex items-center gap-2">
+        <label className="relative flex-shrink-0 cursor-pointer p-2 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 transition-colors" title="Upload Image from PC">
+          {isUploading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+          <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" disabled={isUploading} />
+        </label>
+
         <input
           type="text"
           value={value}

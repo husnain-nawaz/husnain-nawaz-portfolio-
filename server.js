@@ -60,6 +60,11 @@ async function startServer() {
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+  // Create uploads directory if it doesn't exist
+  const uploadsDir = path.resolve(__dirname, 'server/uploads');
+  if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+  app.use('/uploads', express.static(uploadsDir));
+
   // Initialize DB & Seed Data
   await initDatabase();
 
@@ -239,6 +244,26 @@ async function startServer() {
   // ---------------------------------------------------------------------------
   // ADMIN CMS ROUTES (Protected)
   // ---------------------------------------------------------------------------
+
+  // Upload Image
+  app.post('/api/admin/upload', verifyAdminToken, async (req, res) => {
+    try {
+      const { fileData, fileName } = req.body;
+      if (!fileData || !fileName) return res.status(400).json({ error: 'Missing file data or name' });
+      
+      const base64Data = fileData.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+      const safeFileName = `${Date.now()}_${fileName.replace(/[^a-z0-9.]/gi, '_').toLowerCase()}`;
+      const savePath = path.join(__dirname, 'server/uploads', safeFileName);
+      
+      fs.writeFileSync(savePath, buffer);
+      
+      res.json({ url: `/uploads/${safeFileName}` });
+    } catch (err) {
+      console.error('Upload Error:', err);
+      res.status(500).json({ error: 'Image upload failed' });
+    }
+  });
 
   // Profile Update
   app.put('/api/admin/profile', verifyAdminToken, async (req, res) => {
