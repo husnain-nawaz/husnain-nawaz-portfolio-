@@ -151,3 +151,14 @@ CREATE TABLE IF NOT EXISTS `contact_messages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- -----------------------------------------------------------------------------
+-- 8. Seed Initial Data (Only if tables are empty)
+-- -----------------------------------------------------------------------------
+
+INSERT IGNORE INTO `admins` (`id`, `username`, `password_hash`, `email`, `role`) 
+VALUES (1, 'admin', '$2a$10$T8Z4m1a/pS1T3M7O5/eZtuzZ9XhL3oG.Q.6YgQJ9kX5W0XqG2G7F6', 'chhusnain2345@gmail.com', 'superadmin');
+-- Note: The above hash is for 'husnain@admin2026!'
+
+INSERT IGNORE INTO `profile_settings` (`id`, `name`, `title`, `bio`, `about_long`, `email`, `phone`, `location`)
+VALUES (1, 'Husnain Nawaz', 'Jr. Full-Stack Developer & UI/UX Engineer', 'Versatile Computer Science graduate with hands-on professional experience building modern web applications.', 'I am a full-stack engineer and designer based in Lahore, Pakistan.', 'chhusnain2345@gmail.com', '+92 309 9694193', 'Lahore, Pakistan');

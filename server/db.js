@@ -453,9 +453,22 @@ export async function initDatabase() {
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
+        multipleStatements: true
       });
 
       const connection = await mysqlPool.getConnection();
+      
+      try {
+        const schemaPath = path.resolve(process.cwd(), 'database/schema.sql');
+        if (fs.existsSync(schemaPath)) {
+          const schemaSql = fs.readFileSync(schemaPath, 'utf8');
+          await connection.query(schemaSql);
+          console.log('✅ Auto-created/verified MySQL tables from schema.sql');
+        }
+      } catch (schemaErr) {
+        console.error('⚠️ Could not run schema.sql (tables might already exist or syntax error):', schemaErr.message);
+      }
+
       connection.release();
       isUsingMySQL = true;
       mysqlError = null;
