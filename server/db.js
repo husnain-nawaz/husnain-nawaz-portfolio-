@@ -459,11 +459,15 @@ export async function initDatabase() {
       const connection = await mysqlPool.getConnection();
       
       try {
-        const schemaPath = path.resolve(process.cwd(), 'database/schema.sql');
+        const currentDir = path.dirname(new URL(import.meta.url).pathname);
+        // Fix for Windows paths when using URL pathname
+        const schemaPath = path.resolve(currentDir.replace(/^\/([a-zA-Z]:)/, '$1'), '../database/schema.sql');
         if (fs.existsSync(schemaPath)) {
           const schemaSql = fs.readFileSync(schemaPath, 'utf8');
           await connection.query(schemaSql);
           console.log('✅ Auto-created/verified MySQL tables from schema.sql');
+        } else {
+          console.error('⚠️ Could not find schema.sql at path:', schemaPath);
         }
       } catch (schemaErr) {
         console.error('⚠️ Could not run schema.sql (tables might already exist or syntax error):', schemaErr.message);
